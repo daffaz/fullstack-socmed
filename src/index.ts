@@ -1,21 +1,23 @@
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
-import { Post } from "./entities/Post";
 import mikroOrmConfig from "./mikro-orm.config";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
 
 const main = async function () {
   const orm = await MikroORM.init(mikroOrmConfig);
   await orm.getMigrator().up();
 
-  //   const post: Post = orm.em.create(Post, { title: "First post" });
-  //   await orm.em.persistAndFlush(post);
+  const app = express();
 
-  const postId1 = await orm.em.find(Post, { id: 1 });
-  const posts = await orm.em.find(Post, {});
-
-  console.log(posts);
-  console.log("===============POSTS WITH ID 1==============");
-  console.log(postId1);
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema(),
+    resolvers: [],
+  });
+  app.listen(4000, () => {
+    console.log("Running in port 4000");
+  });
 };
 
 main().catch((err) => {
