@@ -4,6 +4,7 @@ import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver()
 export class PostResolver {
+  // Fetchall
   @Query(() => [Post])
   posts(@Ctx() ctx: MyContext): Promise<Post[]> {
     // return em.find(Post, {}); if destructor ctx to { em }, which is convinient
