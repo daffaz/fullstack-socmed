@@ -7,6 +7,7 @@ import {
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
@@ -107,9 +108,22 @@ export class UserResolver {
         };
       }
     }
+    // store user id session
+    // keep them logged in
+    ctx.req.session.userId = user.id;
     return {
       user: user,
     };
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { em, req }: MyContext) {
+    // If not log in (cookie user id not found)
+    if (!req.session.userId) {
+      return null;
+    }
+    const user = await em.findOne(User, { id: req.session.userId });
+    return user;
   }
 
   @Mutation(() => UserResponse)
