@@ -3,6 +3,7 @@ import { __prod__ } from "./constants";
 import mikroOrmConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
@@ -10,7 +11,7 @@ import { UserResolver } from "./resolvers/user";
 import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
-var cors = require("cors");
+// var cors = require("cors");
 
 const main = async function () {
   const orm = await MikroORM.init(mikroOrmConfig);
@@ -30,17 +31,17 @@ const main = async function () {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 90, // 3 months
         httpOnly: true,
-        sameSite: "none", // csrf
-        secure: true, // cookie only works in https
+        sameSite: "lax", // csrf
+        secure: __prod__, // cookie only works in https
       },
       saveUninitialized: false,
       secret: "somerandomsecretkeysdkjala",
       resave: false,
     })
   );
-  app.use(
-    cors({ credentials: true, origin: "https://studio.apollographql.com" })
-  );
+  // app.use(
+  //   cors({ credentials: true, origin: "https://studio.apollographql.com" })
+  // );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -48,6 +49,7 @@ const main = async function () {
       validate: false,
     }),
     context: ({ req, res }) => ({ em: orm.em, req, res }),
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
 
   await apolloServer.start();
