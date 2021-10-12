@@ -11,7 +11,7 @@ import { UserResolver } from "./resolvers/user";
 import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
-// var cors = require("cors");
+var cors = require("cors");
 
 const main = async function () {
   const orm = await MikroORM.init(mikroOrmConfig);
@@ -39,9 +39,7 @@ const main = async function () {
       resave: false,
     })
   );
-  // app.use(
-  //   cors({ credentials: true, origin: "https://studio.apollographql.com" })
-  // );
+  app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -68,7 +66,10 @@ const main = async function () {
   //   // Pass to next layer of middleware
   //   next();
   // });
-  apolloServer.applyMiddleware({ app, cors: false });
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   app.listen(4000, () => {
     console.log("Running in port 4000");
