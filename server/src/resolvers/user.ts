@@ -51,7 +51,7 @@ export class UserResolver {
         errors: [
           {
             field: "username",
-            message: "length must be greater than 2",
+            message: "username length must be greater than 2",
           },
         ],
       };
@@ -62,7 +62,7 @@ export class UserResolver {
         errors: [
           {
             field: "password",
-            message: "length must be greater than 2",
+            message: "password length must be greater than 2",
           },
         ],
       };
@@ -108,6 +108,7 @@ export class UserResolver {
         };
       }
     }
+
     // store user id session
     // keep them logged in
     ctx.req.session.userId = user.id;

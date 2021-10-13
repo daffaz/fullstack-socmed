@@ -7,12 +7,10 @@ import { toErrorMap } from "../../utils/toErrorMap";
 import { DarkModeSwitch } from "../components/DarkModeSwitch";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
-import { RegisterMutation, useRegisterMutation } from "../generated/graphql";
+import { LoginMutation, useLoginMutation } from "../generated/graphql";
 
-interface registerProps {}
-
-const Register: React.FC<registerProps> = ({}) => {
-  const [, register] = useRegisterMutation();
+const Login: React.FC<{}> = ({}) => {
+  const [, login] = useLoginMutation();
   const router = useRouter();
   return (
     <Wrapper variant="small">
@@ -21,13 +19,13 @@ const Register: React.FC<registerProps> = ({}) => {
         <Formik
           initialValues={{ username: "", password: "" }}
           onSubmit={async (values, { setErrors }) => {
-            const response: OperationResult<RegisterMutation> = await register({
+            const response: OperationResult<LoginMutation> = await login({
               username: values.username,
               password: values.password,
             });
-            if (response.data?.register.errors) {
-              setErrors(toErrorMap(response.data.register.errors));
-            } else if (response.data?.register.user) {
+            if (response.data?.login.errors) {
+              setErrors(toErrorMap(response.data.login.errors));
+            } else if (response.data?.login.user) {
               router.push("/");
             }
           }}
@@ -53,7 +51,7 @@ const Register: React.FC<registerProps> = ({}) => {
                   colorScheme="teal"
                   isLoading={isSubmitting}
                 >
-                  Register
+                  Login
                 </Button>
               </Box>
             </Form>
@@ -64,4 +62,4 @@ const Register: React.FC<registerProps> = ({}) => {
   );
 };
 
-export default Register;
+export default Login;
